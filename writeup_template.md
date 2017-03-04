@@ -1,16 +1,19 @@
 #**Finding Lane Lines on the Road** 
 
-##Writeup Template
-
-###You can use this file as a template for your writeup if you want to submit it as a markdown file. But feel free to use some other method and submit a pdf if you prefer.
-
----
-
 **Finding Lane Lines on the Road**
 
-The goals / steps of this project are the following:
-* Make a pipeline that finds lane lines on the road
-* Reflect on your work in a written report
+The goals / steps of this project are the following: 
+
+* generate a yellow color mask and white color mask using the HSV scaled image
+* mask the image to display only the white and yellow
+* transform the color image with the mask to gray scale
+* use Gaussian blur on the image
+* using Canny edge detector, extract edges from the masekd gray-scaled image
+* only focus on the region of interest by masking the area of interest with a polygon
+* using the edge within the region of interest, use Hough lines to extract lines
+* put higher weight on lines proportional to the line length
+* group the points in left and right side of the image and perform linear regression on two groups
+* mix the line with the original color image 
 
 
 [//]: # (Image References)
