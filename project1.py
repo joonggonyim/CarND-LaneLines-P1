@@ -34,11 +34,6 @@ def process_image(image):
     
     img_maskColor = cv2.bitwise_and(im_gray,mask_color)
 
-
-    
-
-
-
     # gaussian blur
     kernel_size = 5
     im_blur = gaussian_blur(img_maskColor, kernel_size)
@@ -57,10 +52,6 @@ def process_image(image):
                            (imX,imY*(1-pfb))] ],dtype=np.int32)
     
     im_mask = region_of_interest(im_edge, vertices)
-    
-
-    
-
     # hough line
     # Define the Hough transform parameters
     # Make a blank the same size as our image to draw on
@@ -77,14 +68,3 @@ def process_image(image):
     return im_final
     # return result
 
-
-# img_fname = "test_images/" + imList[2]
-
-# img = mpimg.imread(img_fname)
-# imFinal = process_image(img)
-# # plt.imshow(imFinal,'gray')
-
-challenge_output = 'extra.mp4'
-clip2 = VideoFileClip('challenge.mp4')
-challenge_clip = clip2.fl_image(process_image)
-challenge_clip.write_videofile(challenge_output, audio=False)
