@@ -28,20 +28,9 @@ The goals / steps of this project are the following:
 * using Canny edge detector, extract edges from the masekd gray-scaled image
 * only focus on the region of interest by masking the area of interest with a polygon
 * using the edge within the region of interest, use Hough lines to extract lines
-
->Plot of Hough Lines
-![][hough_lines]
-
 * put higher weight on lines proportional to the line length
 * group the points in left and right side of the image and perform linear regression on two groups
->Interpolated Lines
-![][interp_lines]
-
 * mix the line with the original color image 
->FINAL IMAGE
-![][im_final]
-
-
 ---
 
 ### Reflection
@@ -125,16 +114,38 @@ It should be noted that a white car that was traveling on your right lane is mas
 ####1.5) Hough Transform
 Now that I was able to extract the edges from the image in specified color range and region, I can start extrapolating lines from the edges. 
 
+```python
+rho = 1 # distance resolution in pixels of the Hough grid
+theta = np.pi/180 # angular resolution in radians of the Hough grid
+threshold = 20     # minimum number of votes (intersections in Hough grid cell)
+min_line_len = 10 #minimum number of pixels making up a line
+max_line_gap = 50    # maximum gap in pixels between connectable line segments
+
+lines = cv2.HoughLinesP(masked_image, rho, theta, threshold, np.array([]), minLineLength=min_line_len, maxLineGap=max_line_gap)
+```
+
+>Plot of Hough Lines
+![][hough_lines]
+
+####1.6) Weighted Interpolation
+Thhe lines defined by hough transform should be divided into two groups, left and right. In order to ensure that longer lines have more weight on creating the final line, I duplicate the lines proportional to their line length. Afterwards, all the points in each group are interpolated to generate a single line. Since the lines start and end at different locations for each frame, the end points of the two lines are specified. 
+
+>Interpolated Lines
+![][interp_lines]
+
+####1.7) Weighted mix
+Finally, the image of the line and original RBG images are mixed withe the weight of 0.8:1.0 (line:original).
+
+>FINAL IMAGE
+![][im_final]
+
 ###2. Identify potential shortcomings with your current pipeline
 
 
-One potential shortcoming would be what would happen when ... 
+One potential shortcoming would be what would happen when there is a white or yellow car very close to my car in my lane. This car will not be masked in and the edges from the car will be interpolated to generate wrong line.  
 
-Another shortcoming could be ...
-
+Another shortcoming could be there may be a car crossing the line to the next lane and cover up the lane lines from vision. 
 
 ###3. Suggest possible improvements to your pipeline
 
-A possible improvement would be to ...
-
-Another potential improvement could be to ...
+A possible improvement would be to let remember the slope and y-intercept values from each slope and perform running average through out the frame. The problem with this approach is that the number of frames to choose as window size have be fine tuned.
